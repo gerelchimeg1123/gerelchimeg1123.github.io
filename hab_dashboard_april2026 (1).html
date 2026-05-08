@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ХАБ-ын Сургагчийн Ажлын Тайлан</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --green: #3fb950;
+    --green-dim: #1a3a25;
+    --blue: #58a6ff;
+    --blue-dim: #1a2a3a;
+    --orange: #f78166;
+    --orange-dim: #3a1a15;
+    --yellow: #e3b341;
+    --yellow-dim: #3a2d10;
+    --purple: #a371f7;
+    --purple-dim: #2a1a4a;
+    --teal: #39d353;
+    --red: #f85149;
+    --cyan: #79c0ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 22px;
+    margin-bottom: 16px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .header-title { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+  .header-date {
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* KPI CARDS ROW */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .kpi-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.blue::before { background: var(--blue); }
+  .kpi-card.orange::before { background: var(--orange); }
+  .kpi-card.cyan::before { background: var(--cyan); }
+  .kpi-card.purple::before { background: var(--purple); }
+  .kpi-card.red::before { background: var(--red); }
+
+  .kpi-value { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+  .kpi-card.green .kpi-value { color: var(--green); }
+  .kpi-card.blue .kpi-value { color: var(--blue); }
+  .kpi-card.orange .kpi-value { color: var(--orange); }
+  .kpi-card.cyan .kpi-value { color: var(--cyan); }
+  .kpi-card.purple .kpi-value { color: var(--purple); }
+  .kpi-card.red .kpi-value { color: var(--red); }
+
+  .kpi-label { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text2); }
+  .kpi-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  /* MAIN GRID */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .card-title { font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text2); display: flex; align-items: center; gap: 7px; }
+  .card-badge { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; color: var(--cyan); }
+
+  /* TASK LIST */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .task-item:last-child { border-bottom: none; }
+
+  .status-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .status-closed { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .status-pending { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+  .status-inprog { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+
+  .freq-badge {
+    font-size: 9px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .task-text { color: var(--text); line-height: 1.4; flex: 1; }
+
+  /* BAR CHARTS */
+  .bar-group { margin-bottom: 10px; }
+  .bar-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .bar-track { background: var(--bg3); border-radius: 3px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+  /* DONUT */
+  .donut-wrap { display: flex; justify-content: center; align-items: center; margin: 10px 0; }
+
+  /* LEGEND ITEMS */
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .legend-item:last-child { border-bottom: none; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; color: var(--text); }
+  .legend-count { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; }
+  .legend-pct { font-size: 11px; color: var(--text2); margin-left: 4px; }
+
+  /* FREQ CHART */
+  .freq-item { margin-bottom: 10px; }
+  .freq-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .freq-name { font-size: 12px; color: var(--text2); width: 60px; }
+  .freq-val { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--cyan); width: 28px; text-align: right; }
+
+  /* TRAINING TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text2); padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+  td { padding: 7px 8px; border-bottom: 1px solid #1e2530; color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg3); }
+  .td-count { font-family: 'IBM Plex Mono', monospace; font-weight: 700; color: var(--green); text-align: center; background: var(--green-dim); border-radius: 4px; padding: 2px 6px; }
+
+  /* BOTTOM GRID */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* LV/SV STATS */
+  .lvsv-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 10px; }
+  .lvsv-item { text-align: center; background: var(--bg3); border-radius: 8px; padding: 12px 8px; }
+  .lvsv-val { font-size: 26px; font-weight: 800; }
+  .lvsv-label { font-size: 10px; color: var(--text2); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* JURAM TABLE */
+  .juram-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 12px; }
+  .juram-item { text-align: center; background: var(--bg3); border-radius: 8px; padding: 10px; }
+  .juram-val { font-size: 22px; font-weight: 800; }
+  .juram-label { font-size: 10px; color: var(--text2); margin-top: 3px; }
+
+  /* TOP TASKS */
+  .top-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .top-item:last-child { border-bottom: none; }
+  .top-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text2); width: 16px; }
+  .top-text { flex: 1; color: var(--text); }
+
+  /* SECTION DIVIDER */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  /* SCROLL */
+  .scrollable { max-height: 260px; overflow-y: auto; }
+  .scrollable::-webkit-scrollbar { width: 4px; }
+  .scrollable::-webkit-scrollbar-track { background: var(--bg3); }
+  .scrollable::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ANIMATE IN */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .kpi-card { animation: fadeUp 0.4s ease both; }
+  .kpi-card:nth-child(1){animation-delay:0.05s}
+  .kpi-card:nth-child(2){animation-delay:0.1s}
+  .kpi-card:nth-child(3){animation-delay:0.15s}
+  .kpi-card:nth-child(4){animation-delay:0.2s}
+  .kpi-card:nth-child(5){animation-delay:0.25s}
+  .kpi-card:nth-child(6){animation-delay:0.3s}
+  .card { animation: fadeUp 0.5s ease both; animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-dot"></div>
+    <div class="header-title">⚡ ХАБ-ын Сургагчийн Ажлын Тайлан</div>
+  </div>
+  <div class="header-date">2026.04.06 — 2026.04.20</div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-row">
+  <div class="kpi-card green">
+    <div class="kpi-value">77</div>
+    <div class="kpi-label">Нийт даалгавар</div>
+    <div class="kpi-sub">Бүртгэгдсэн ажил</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-value">55</div>
+    <div class="kpi-label">CLOSED</div>
+    <div class="kpi-sub">71% гүйцэтгэл</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-value">20</div>
+    <div class="kpi-label">PENDING</div>
+    <div class="kpi-sub">26% хийгдэх</div>
+  </div>
+  <div class="kpi-card cyan">
+    <div class="kpi-value">225</div>
+    <div class="kpi-label">Хамрагдсан</div>
+    <div class="kpi-sub">11 сургалт</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-value">139</div>
+    <div class="kpi-label">Журам/Заавар</div>
+    <div class="kpi-sub">138 хүчинтэй</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-value">95</div>
+    <div class="kpi-label">Жолооны хүсэлт</div>
+    <div class="kpi-sub">OfficeForms</div>
+  </div>
+</div>
+
+<!-- MAIN 3 COLUMNS -->
+<div class="main-grid">
+
+  <!-- LEFT: Task List -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">⚡ Ажлын гүйцэтгэл — Статус · Давтамж · Тайлбар</div>
+      <div class="card-badge">77 НИЙТ</div>
+    </div>
+    <div class="scrollable">
+      <div class="task-item">
+        <span class="status-badge status-inprog">IN-PROG</span>
+        <span class="freq-badge">weekly</span>
+        <span class="task-text">LV SV эрхтэй ажилчдаас шалгалт авсан excel бүртгэл илгээх</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-pending">PENDING</span>
+        <span class="freq-badge">daily</span>
+        <span class="task-text">Шинэ ажилтны сургалт зохион байгуулах (05.04)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-pending">PENDING</span>
+        <span class="freq-badge">daily</span>
+        <span class="task-text">Italent app-д Тоолбокс хичээлүүд оруулах (05.06)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-pending">PENDING</span>
+        <span class="freq-badge">weekly</span>
+        <span class="task-text">Шинэ ажилчдаас ША-ны бичгэн шалгалт авах (05.08)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-pending">PENDING</span>
+        <span class="freq-badge">weekly</span>
+        <span class="task-text">Тоолбокс танилцуулах мэргэжилтнүүдэд мэдээлэл өгөх (05.09)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-pending">PENDING</span>
+        <span class="freq-badge">weekly</span>
+        <span class="task-text">Цахилгааны сургалт 05.11-05.16 зохион байгуулах</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-pending">PENDING</span>
+        <span class="freq-badge">weekly</span>
+        <span class="task-text">RATS XAX сургалт зохион байгуулах (ЦАХ хэлтэс)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-closed">CLOSED</span>
+        <span class="freq-badge">daily</span>
+        <span class="task-text">Italent app-д ТТЖВ журмууд оруулсан (04.06)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-closed">CLOSED</span>
+        <span class="freq-badge">daily</span>
+        <span class="task-text">УАХ-ын В, Г ээлжид 1 цагийн сургалт зохион байгуулсан (04.07)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-closed">CLOSED</span>
+        <span class="freq-badge">weekly</span>
+        <span class="task-text">4-р сарын аяны постер бэлтгэн ITalent-д оруулсан (04.10)</span>
+      </div>
+      <div class="task-item">
+        <span class="status-badge status-closed">CLOSED</span>
+        <span class="freq-badge">monthly</span>
+        <span class="task-text">Сургалтийн материал боловсруулсан — журмын материал шинэчлэсэн</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--green)">● CLOSED: 55</span>
+      <span style="font-size:11px;color:var(--orange)">● PENDING: 20</span>
+      <span style="font-size:11px;color:var(--blue)">● IN-PROGRESS: 2</span>
+      <span style="font-size:11px;color:var(--text2);margin-left:auto">Нийт: 77</span>
+    </div>
+  </div>
+
+  <!-- MIDDLE: Status + Frequency + Top Tasks -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📊 Гүйцэтгэл — Статус × Давтамж</div>
+    </div>
+
+    <div class="section-label">Давтамжийн задаргаа</div>
+    <div class="freq-item">
+      <div class="freq-row">
+        <span class="freq-name">daily</span>
+        <div class="bar-track" style="flex:1">
+          <div class="bar-fill" style="width:23%;background:var(--cyan)"></div>
+        </div>
+        <span class="freq-val">18</span>
+      </div>
+    </div>
+    <div class="freq-item">
+      <div class="freq-row">
+        <span class="freq-name">weekly</span>
+        <div class="bar-track" style="flex:1">
+          <div class="bar-fill" style="width:75%;background:var(--blue)"></div>
+        </div>
+        <span class="freq-val">58</span>
+      </div>
+    </div>
+    <div class="freq-item">
+      <div class="freq-row">
+        <span class="freq-name">monthly</span>
+        <div class="bar-track" style="flex:1">
+          <div class="bar-fill" style="width:1%;background:var(--purple)"></div>
+        </div>
+        <span class="freq-val">1</span>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:14px">Гүйцэтгэлийн явц</div>
+    <div class="bar-group">
+      <div class="bar-label"><span>● CLOSED</span><span style="color:var(--green)">55 — 71%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--green)"></div></div>
+    </div>
+    <div class="bar-group" style="margin-top:8px">
+      <div class="bar-label"><span>● PENDING</span><span style="color:var(--orange)">20 — 26%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:26%;background:var(--orange)"></div></div>
+    </div>
+    <div class="bar-group" style="margin-top:8px">
+      <div class="bar-label"><span>● IN-PROGRESS</span><span style="color:var(--blue)">2 — 3%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:3%;background:var(--blue)"></div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:16px">Топ ажлууд</div>
+    <div class="top-item"><span class="top-num">1.</span><span class="top-text">ITalent журам оруулсан</span></div>
+    <div class="top-item"><span class="top-num">2.</span><span class="top-text">Сургалтын материал шинэчилсэн</span></div>
+    <div class="top-item"><span class="top-num">3.</span><span class="top-text">Сургалт зохион байгуулсан</span></div>
+    <div class="top-item"><span class="top-num">4.</span><span class="top-text">Жолооны үнэмлэх бүрдүүлэлт</span></div>
+    <div class="top-item"><span class="top-num">5.</span><span class="top-text">Өдөр тутмын тайлан хүргүүлсэн</span></div>
+  </div>
+
+  <!-- RIGHT: Dept Chart -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🏢 Хэлтсээр — Хамрагдсан тоо</div>
+      <div class="card-badge" style="color:var(--purple)">НИЙТ 225</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan)"></div>
+      <span class="legend-label">УАХ</span>
+      <span class="legend-count" style="color:var(--cyan)">181</span>
+      <span class="legend-pct">— 80%</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:10px"><div class="bar-fill" style="width:80%;background:var(--cyan)"></div></div>
+
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--purple)"></div>
+      <span class="legend-label">Агуулах</span>
+      <span class="legend-count" style="color:var(--purple)">20</span>
+      <span class="legend-pct">— 9%</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:10px"><div class="bar-fill" style="width:9%;background:var(--purple)"></div></div>
+
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--yellow)"></div>
+      <span class="legend-label">Ачилт</span>
+      <span class="legend-count" style="color:var(--yellow)">12</span>
+      <span class="legend-pct">— 5%</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:10px"><div class="bar-fill" style="width:5%;background:var(--yellow)"></div></div>
+
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--green)"></div>
+      <span class="legend-label">Захиргаа</span>
+      <span class="legend-count" style="color:var(--green)">8</span>
+      <span class="legend-pct">— 4%</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:10px"><div class="bar-fill" style="width:4%;background:var(--green)"></div></div>
+
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--orange)"></div>
+      <span class="legend-label">Засвар</span>
+      <span class="legend-count" style="color:var(--orange)">4</span>
+      <span class="legend-pct">— 2%</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:16px"><div class="bar-fill" style="width:2%;background:var(--orange)"></div></div>
+
+    <div class="section-label">Жолооны үнэмлэх — LV/SV</div>
+    <div class="lvsv-row">
+      <div class="lvsv-item">
+        <div class="lvsv-val" style="color:var(--cyan)">95</div>
+        <div class="lvsv-label">Захиалга</div>
+      </div>
+      <div class="lvsv-item">
+        <div class="lvsv-val" style="color:var(--green)">25</div>
+        <div class="lvsv-label">Олгосон</div>
+      </div>
+      <div class="lvsv-item">
+        <div class="lvsv-val" style="color:var(--blue)">27</div>
+        <div class="lvsv-label">Шинэ</div>
+      </div>
+      <div class="lvsv-item">
+        <div class="lvsv-val" style="color:var(--purple)">42</div>
+        <div class="lvsv-label">Сунгалт</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM 2 COLUMNS -->
+<div class="bottom-grid">
+
+  <!-- Juram section -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📋 Журам · Заавар · Горим — Баримтын тоо ба хуудасны тоо</div>
+      <div class="card-badge" style="color:var(--blue)">НИЙТ 139</div>
+    </div>
+    <div class="juram-row">
+      <div class="juram-item">
+        <div class="juram-val" style="color:var(--purple)">81</div>
+        <div class="juram-label">Заавар</div>
+      </div>
+      <div class="juram-item">
+        <div class="juram-val" style="color:var(--blue)">50</div>
+        <div class="juram-label">Журам</div>
+      </div>
+      <div class="juram-item">
+        <div class="juram-val" style="color:var(--yellow)">5</div>
+        <div class="juram-label">Горим</div>
+      </div>
+      <div class="juram-item">
+        <div class="juram-val" style="color:var(--green)">2</div>
+        <div class="juram-label">Хөтөлбөр</div>
+      </div>
+      <div class="juram-item">
+        <div class="juram-val" style="color:var(--orange)">1</div>
+        <div class="juram-label">Дүрэм</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div style="background:var(--bg3);border-radius:6px;padding:8px 14px;font-size:12px;">
+        <span style="color:var(--text2)">Нийт баримт: </span><span style="color:var(--cyan);font-weight:700">139</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:8px 14px;font-size:12px;">
+        <span style="color:var(--text2)">Хүчинтэй: </span><span style="color:var(--green);font-weight:700">138</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:8px 14px;font-size:12px;">
+        <span style="color:var(--text2)">Шинэ + 10</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:8px 14px;font-size:12px;">
+        <span style="color:var(--text2)">Шинэчлэгдсэн: </span><span style="color:var(--yellow);font-weight:700">12</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Training table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🎓 Сургалтын бүртгэл — 11 сургалт · Нийт 225 ажилтан</div>
+    </div>
+    <div class="scrollable">
+      <table>
+        <thead>
+          <tr>
+            <th>Огноо</th>
+            <th>Хэлтэс</th>
+            <th>Ээлж</th>
+            <th>Шалгалт</th>
+            <th>Тоо</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2026.04.07</td><td>УАХ</td><td>Г ээлж</td><td>Цахим шалгалт</td><td><span class="td-count">95</span></td></tr>
+          <tr><td>2026.04.08</td><td>УАХ</td><td>В ээлж</td><td>Цахим шалгалт</td><td><span class="td-count">82</span></td></tr>
+          <tr><td>2026.04.09</td><td>Ачилт</td><td>В ээлж</td><td>Шалгалт аваагүй</td><td><span class="td-count">12</span></td></tr>
+          <tr><td>2026.04.09</td><td>Агуулах</td><td>В ээлж</td><td>Цахим шалгалт</td><td><span class="td-count">20</span></td></tr>
+          <tr><td>2026.04.14</td><td>Захиргаа</td><td>А ээлж</td><td>Цахим шалгалт</td><td><span class="td-count">2</span></td></tr>
+          <tr><td>2026.04.17</td><td>УАХ</td><td>А ээлж</td><td>Цахим шалгалт</td><td><span class="td-count">2</span></td></tr>
+          <tr><td>2026.04.18</td><td>УАХ</td><td>А ээлж</td><td>Журмын сургалт</td><td><span class="td-count">2</span></td></tr>
+          <tr><td>2026.04.15</td><td>Захиргаа</td><td>А ээлж</td><td>Зочны зааварчилгаа</td><td><span class="td-count">1</span></td></tr>
+          <tr><td>2026.04.16</td><td>Захиргаа</td><td>А ээлж</td><td>Зочны зааварчилгаа</td><td><span class="td-count">3</span></td></tr>
+          <tr><td>2026.04.19</td><td>Засвар</td><td>А ээлж</td><td>Зочны зааварчилгаа</td><td><span class="td-count">4</span></td></tr>
+          <tr><td>2026.04.09</td><td>Захиргаа</td><td>В ээлж</td><td>Тур ажилтны АА</td><td><span class="td-count">1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--text2)">
+      <span>Нийт сургалт: <b style="color:var(--cyan)">11</b></span>
+      <span>Нийт хамрагдсан: <b style="color:var(--green)">225</b></span>
+      <span>Хамгийн их: <b style="color:var(--yellow)">95 (УАХ-Г)</b></span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
